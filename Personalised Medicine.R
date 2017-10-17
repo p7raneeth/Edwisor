@@ -102,7 +102,7 @@ accuracy = sum(diag(cm1))/sum(cm1)
 
 #-------------------------------------------------------------------------------
 #K-Fold cross validation
-
+# The value of k can be anything between 2 and 10 for this instance i have considered 2 for the sake of experimentation
 folds = createFolds(train$Class, k = 2)
 
 cv = lapply(folds, function(x){
