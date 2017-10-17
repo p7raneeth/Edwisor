@@ -95,7 +95,7 @@ predicted = predict(classifier,   newdata =  test)
 pred_file = cbind(test,predicted)
 cm1 = table(test$Class,predicted)
 write.table(pred_file[,c(1:4,3508,5:3507)],paste0('prediction_file.csv'),sep = ',',row.names = FALSE,append = TRUE)
-write.table(cm,paste0('confusion_matrix.csv'),sep = ',',append = TRUE)
+write.table(cm,paste0('confusion_matrix.csv'),sep = ',',row.names = FALSE,append = TRUE)
 accuracy = sum(diag(cm1))/sum(cm1)
 
 #-------------------------------------------------------------------------------
@@ -111,7 +111,7 @@ cv = lapply(folds, function(x){
   pred_file = cbind(test_set,class_predicted)
   write.table(pred_file[,c(1:4,3508,5:3507)],paste0('prediction_file_All_Folds.csv'),sep = ',',row.names = FALSE,append = TRUE)
   cm = table(test_set$Class,class_predicted)
-  write.table(cm,paste0('confusion_matrix_All_Folds.csv'),sep = ',',append = TRUE)
+  write.table(cm,paste0('confusion_matrix_All_Folds.csv'),sep = ',',row.names = FALSE,append = TRUE)
   accuracy = sum(diag(cm))/sum(cm)
   return(accuracy)
 })
