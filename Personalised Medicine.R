@@ -116,6 +116,7 @@ cv = lapply(folds, function(x){
   pred_file = pred_file[,c('ID','class1','class2','class3','class4','class5','class6','class7','class8','class9')]
   write.table(pred_file,paste0('prediction_file_K-FOLD.csv'),sep = ',',row.names = FALSE,append = TRUE)
   cm = table(test_set$Class,class_predicted)
+  cm
   accuracy = sum(diag(cm))/sum(cm)
   return(accuracy)
 })
