@@ -1,5 +1,4 @@
 
-#-------------------------------------------------------------------------------
 # Loading the required libraries
 library(data.table)
 library(Matrix)
@@ -9,6 +8,7 @@ library(tm)
 library(e1071)
 library(caret)
 library(SnowballC)
+library(MLmetrics)
 
 
 #-------------------------------------------------------------------------------
@@ -90,28 +90,32 @@ library(e1071)
 library(caret)
 
 
-classifier = svm(Class~., data = train)
-predicted = predict(classifier,   newdata =  test)
-pred_file = cbind(test,predicted)
+classifier = svm(Class~., data = train,probability = TRUE)
+predicted = predict(classifier,   newdata =  test,probability = TRUE)
+predicted1 = data.frame(attr(predicted, "probabilities"))
+predicted1 = cbind(test$ID,predicted1)
+colnames(predicted1) = c('ID','class2','class3','class4','class1','class5','class6','class7','class9','class8')
+predicted1 = predicted1[,c('ID','class1','class2','class3','class4','class5','class6','class7','class8','class9')]
 cm1 = table(test$Class,predicted)
-write.table(pred_file[,c(1:4,3508,5:3507)],paste0('prediction_file.csv'),sep = ',',row.names = FALSE,append = TRUE)
-write.table(cm1,paste0('confusion_matrix.csv'),sep = ',',row.names = FALSE,append = TRUE)
+write.table(predicted1,paste0('prediction_file.csv'),sep = ',',row.names = FALSE)
 accuracy = sum(diag(cm1))/sum(cm1)
 
 #-------------------------------------------------------------------------------
 #K-Fold cross validation
 
-folds = createFolds(train$Class, k = 9)
+folds = createFolds(train$Class, k = 2)
 
 cv = lapply(folds, function(x){
   training_set = train[-x,]
   test_set = train[x,]
-  classifier_local = svm(Class~., data = training_set)
-  class_predicted = predict(classifier_local,   newdata =  test_set)
-  pred_file = cbind(test_set,class_predicted)
-  write.table(pred_file[,c(1:4,3508,5:3507)],paste0('prediction_file_All_Folds.csv'),sep = ',',row.names = FALSE,append = TRUE)
+  classifier_local = svm(Class~., data = training_set,probability = TRUE)
+  class_predicted = predict(classifier_local,   newdata =  test_set,probability = TRUE)
+  class_predicted1 = data.frame(attr(class_predicted, "probabilities"))
+  pred_file = cbind(test_set$ID,class_predicted1)
+  colnames(pred_file) = c('ID','class2','class3','class4','class5','class7','class1','class9','class8','class6')
+  pred_file = pred_file[,c('ID','class1','class2','class3','class4','class5','class6','class7','class8','class9')]
+  write.table(pred_file,paste0('prediction_file_K-FOLD.csv'),sep = ',',row.names = FALSE,append = TRUE)
   cm = table(test_set$Class,class_predicted)
-  write.table(cm,paste0('confusion_matrix_All_Folds.csv'),sep = ',',row.names = FALSE,append = TRUE)
   accuracy = sum(diag(cm))/sum(cm)
   return(accuracy)
 })
@@ -120,5 +124,3 @@ cv = lapply(folds, function(x){
 final_accuracy = mean(as.numeric(cv))
 
 error_rate = 1-final_accuracy
-
-
