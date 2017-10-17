@@ -95,7 +95,7 @@ predicted = predict(classifier,   newdata =  test)
 pred_file = cbind(test,predicted)
 cm1 = table(test$Class,predicted)
 write.table(pred_file[,c(1:4,3508,5:3507)],paste0('prediction_file.csv'),sep = ',',row.names = FALSE,append = TRUE)
-write.table(cm,paste0('confusion_matrix.csv'),sep = ',',row.names = FALSE,append = TRUE)
+write.table(cm1,paste0('confusion_matrix.csv'),sep = ',',row.names = FALSE,append = TRUE)
 accuracy = sum(diag(cm1))/sum(cm1)
 
 #-------------------------------------------------------------------------------
