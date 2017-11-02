@@ -126,8 +126,9 @@ chisq.test(tbl)
 
 #Finding out the important variables from the whole lot
 #------------------------------------------------------
-
-# imp_var = random.forest.importance(categories~., data = dt4)
+install.packages('doBy')
+library(doBy)
+imp_var = random.forest.importance(categories~., data = dt4)
 imp_var2345<-orderBy(~-attr_importance,imp_var)
 important_variables<-rownames(imp_var2345)[1:150]
 dt5<-dt4[,important_variables]
